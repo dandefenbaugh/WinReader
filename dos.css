@@ -52,6 +52,33 @@
   padding: 3px 6px;
 }
 [data-appearance="dos"] .toolbar .pixel-icon { display: none; }
+[data-appearance="dos"] .window-button,
+[data-appearance="dos"] .toolbar :is(#refresh, #open, #manage-feeds) { display: none; }
+#dos-commands {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0 7px 4px;
+  gap: 4px;
+}
+#dos-commands button {
+  flex: 1;
+  padding: 3px 6px;
+  border: 0;
+  color: var(--dos-ink);
+  background: var(--dos-cyan);
+  text-align: left;
+}
+#dos-commands button:disabled { color: #3d585d; }
+#dos-commands button:is(:hover, :active):enabled {
+  color: white;
+  background: #315478;
+}
+#dos-commands kbd {
+  font: inherit;
+  color: white;
+  background: var(--dos-ink);
+  padding: 0 2px;
+}
 [data-appearance="dos"] input[type="checkbox"] {
   color: var(--dos-ink);
   background: var(--dos-cyan);
@@ -113,13 +140,23 @@
 
 [data-appearance="dos"] :is(dialog, #about) {
   color: var(--dos-ink);
-  background: #d8dfeb;
+  background: #c0c0c0;
   border: 3px double var(--dos-ink);
   box-shadow: 3px 3px var(--dos-bg);
 }
 [data-appearance="dos"] dialog h2 {
-  color: var(--dos-cyan);
-  background: var(--dos-panel);
+  color: var(--dos-ink);
+  background: transparent;
+}
+[data-appearance="dos"] dialog .raised {
+  border-color: transparent;
+  background: transparent;
+}
+[data-appearance="dos"] dialog .raised .button-label::before { content: "[ "; }
+[data-appearance="dos"] dialog .raised .button-label::after { content: " ]"; }
+[data-appearance="dos"] dialog .raised:is(:hover, :active, :focus-visible):enabled {
+  color: white;
+  background: #000080;
 }
 [data-appearance="dos"] :is(#subscription-list, .editor-fields input, #article-size) {
   color-scheme: light;
