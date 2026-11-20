@@ -28,6 +28,11 @@ anyone who enjoys old-school interfaces or wants to explore how it was built.
 Get the [latest release](https://github.com/dandefenbaugh/WinReader/releases/latest)
 for Apple Silicon Macs. Extract the ZIP and open `WinReader.app`.
 
+This build is locally signed and hasn’t been notarized by Apple, so macOS may
+block it on first launch. See [Apple’s guidance on opening downloaded apps](https://support.apple.com/en-us/102445).
+
+If you run into a problem or have a suggestion, use [GitHub Issues](https://github.com/dandefenbaugh/WinReader/issues).
+
 ## Run from source
 
 With Node.js 22 or newer installed, run:
