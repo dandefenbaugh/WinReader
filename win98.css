@@ -1,0 +1,138 @@
+:root[data-appearance="win98"] {
+  --face: #d4d0c8;
+  --shadow: #808080;
+  --active: #000080;
+  --win98-dark: #404040;
+  --win98-raised: inset 1px 1px #fff, inset -1px -1px var(--win98-dark),
+    inset 2px 2px #e8e5df, inset -2px -2px var(--shadow);
+  --win98-sunken: inset 1px 1px var(--shadow), inset -1px -1px #fff,
+    inset 2px 2px var(--win98-dark), inset -2px -2px #e8e5df;
+}
+
+[data-appearance="win98"] body {
+  border: 0;
+  box-shadow: var(--win98-raised);
+}
+[data-appearance="win98"] .titlebar {
+  height: 24px;
+  align-items: center;
+  gap: 2px;
+  padding: 2px 3px;
+  border: 0;
+  background: linear-gradient(90deg, #000080, #326ba5);
+}
+[data-appearance="win98"] body.inactive .titlebar {
+  background: linear-gradient(90deg, #555, #777);
+}
+[data-appearance="win98"] .caption {
+  text-align: left;
+  padding-left: 3px;
+  line-height: 20px;
+}
+[data-appearance="win98"] .titlebar .window-button {
+  width: 17px;
+  height: 16px;
+  padding: 0;
+  color: #000;
+  border: 0;
+  box-shadow: var(--win98-raised);
+}
+[data-appearance="win98"] .titlebar .window-button:active {
+  box-shadow: var(--win98-sunken);
+}
+[data-appearance="win98"] .titlebar #system-button {
+  align-self: stretch;
+  height: auto;
+  background: url("assets/article.png") center no-repeat;
+  box-shadow: none;
+}
+[data-appearance="win98"] .titlebar #system-button span { display: none; }
+[data-appearance="win98"] #minimize span {
+  width: 7px;
+  height: 2px;
+  border: 0;
+  background: currentColor;
+  transform: translate(-1px, 3px);
+}
+[data-appearance="win98"] #maximize span {
+  width: 9px;
+  height: 8px;
+  border: 1px solid currentColor;
+  border-top-width: 2px;
+}
+[data-appearance="win98"] body.maximized #maximize span {
+  width: 7px;
+  height: 6px;
+  border: 1px solid currentColor;
+  border-top-width: 2px;
+  box-shadow: 2px -2px 0 -1px var(--face), 3px -3px 0 -1px currentColor;
+  transform: translate(-1px, 1px);
+}
+[data-appearance="win98"] #close-window span {
+  font: bold 15px/1 Arial, sans-serif;
+}
+[data-appearance="win98"] #close-window span::before { content: "×"; }
+
+[data-appearance="win98"] .menubar {
+  background: var(--face);
+  border: 0;
+  box-shadow: inset 0 -1px var(--shadow);
+}
+[data-appearance="win98"] .popup {
+  background: var(--face);
+  border: 0;
+  box-shadow: var(--win98-raised), 2px 2px #0006;
+}
+[data-appearance="win98"] .popup button { background: transparent; }
+[data-appearance="win98"] .popup button:is(:hover, :focus, [aria-expanded="true"]):enabled {
+  background: var(--active);
+}
+[data-appearance="win98"] .popup button:disabled { color: #555; }
+
+[data-appearance="win98"] main { padding: 3px 4px 4px; gap: 4px; }
+[data-appearance="win98"] .toolbar {
+  gap: 2px 4px;
+  padding: 3px;
+  box-shadow: inset 0 1px #fff, inset 0 -1px var(--shadow);
+}
+[data-appearance="win98"] .toolbar button,
+[data-appearance="win98"] .toolbar button:active:not(:disabled) {
+  border: 0;
+  padding: 4px 7px;
+  min-width: 0;
+}
+[data-appearance="win98"] .toolbar button { box-shadow: none; }
+[data-appearance="win98"] .toolbar button:hover:enabled { box-shadow: var(--win98-raised); }
+[data-appearance="win98"] .toolbar button:active:enabled { box-shadow: var(--win98-sunken); }
+
+[data-appearance="win98"] .panes h2 {
+  padding: 4px 7px;
+  background: var(--face);
+  border: 0;
+  box-shadow: var(--win98-raised);
+}
+[data-appearance="win98"] body:not(.inactive) .panes section:focus-within > h2 {
+  color: var(--ink);
+  background: #e8e5df;
+  box-shadow: var(--win98-raised);
+}
+[data-appearance="win98"] .inset {
+  border: 2px solid;
+  border-color: var(--shadow) white white var(--shadow);
+  box-shadow: inset 1px 1px var(--win98-dark);
+}
+[data-appearance="win98"] .rows li { padding-block: 3px; }
+[data-appearance="win98"] footer { padding: 0 4px 3px; }
+[data-appearance="win98"] footer > * {
+  border-color: var(--shadow) #fff #fff var(--shadow);
+}
+[data-appearance="win98"] dialog {
+  border: 0;
+  box-shadow: var(--win98-raised), 2px 2px #0006;
+  padding: 3px;
+}
+[data-appearance="win98"] dialog h2 {
+  background: linear-gradient(90deg, #000080, #326ba5);
+  text-align: left;
+}
+[data-appearance="win98"] .about-caption h2 { padding-left: 24px; }

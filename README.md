@@ -1,16 +1,20 @@
 # WinReader
 
 WinReader is a retro desktop reader for RSS, Atom, and JSON Feed. It comes with
-three themes you can switch between under **View → Appearance**.
+retro themes you can switch between under **View → Appearance**.
 
 - **Windows 3.1** brings back gray beveled controls and classic window chrome.
+- **Windows 98** pairs a blue gradient title bar with recessed panes and a flat
+  icon toolbar. This theme is available when running the feature branch from source.
 - **Windows XP (Luna Blue)** adds bright blue title bars and rounded controls.
 - **DOS Commander** takes inspiration from Norton Commander with deep-blue panes,
   cyan highlights, and a bottom command strip.
 
-| Windows 3.1 | Windows XP (Luna Blue) | DOS Commander |
-| --- | --- | --- |
-| [![WinReader with gray Windows 3.1 controls](docs/screenshots/win31.png)](docs/screenshots/win31.png) | [![WinReader with blue Luna window chrome](docs/screenshots/xp.png)](docs/screenshots/xp.png) | [![WinReader with cyan menus and deep-blue DOS Commander panes](docs/screenshots/dos.png)](docs/screenshots/dos.png) |
+| Windows 3.1 | Windows 98 |
+| --- | --- |
+| [![WinReader with gray Windows 3.1 controls](docs/screenshots/win31.png)](docs/screenshots/win31.png) | [![WinReader with a blue gradient title bar and flat Windows 98 toolbar](docs/screenshots/win98.png)](docs/screenshots/win98.png) |
+| **Windows XP (Luna Blue)** | **DOS Commander** |
+| [![WinReader with blue Luna window chrome](docs/screenshots/xp.png)](docs/screenshots/xp.png) | [![WinReader with cyan menus and deep-blue DOS Commander panes](docs/screenshots/dos.png)](docs/screenshots/dos.png) |
 
 The reader includes formatted article previews, adjustable text size, unread
 tracking, and cached headlines. It ships with a starter set of feeds and can
