@@ -1,6 +1,6 @@
 WinReader version history
 
-Unreleased
+1.5.0
 - Adds a Windows 98 appearance with a blue gradient title bar, beveled controls, and a flat icon toolbar.
 
 1.4.0
