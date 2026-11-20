@@ -1,6 +1,6 @@
 WinReader version history
 
-Unreleased
+1.5.1
 - Improves Windows menu keyboard focus and adds hover opening for cascading menus.
 - Uses paired arrows for Windows 3.1 Restore and a cool-gray Windows 98 control face.
 - Adds a DOS Commander function-key strip for Subscriptions, Open Article, Refresh, Menu, and Quit, and hides Windows caption buttons in DOS.
