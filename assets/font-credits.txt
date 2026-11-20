@@ -1,0 +1,10 @@
+MS Sans Serif and MS Sans Serif Bold
+Created by lou using FontStruct.
+Regular: https://fontstruct.com/fontstructions/show/1384746
+Bold: https://fontstruct.com/fontstructions/show/1384862
+Licensed under Creative Commons Attribution-ShareAlike 3.0 Unported:
+https://creativecommons.org/licenses/by-sa/3.0/legalcode
+
+WinReader uses the WOFF2 conversions distributed by 98.css:
+https://github.com/jdan/98.css/tree/main/fonts/converted
+The font files are bundled as supplied by 98.css.
