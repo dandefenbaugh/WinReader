@@ -1,12 +1,12 @@
 :root[data-appearance="win98"] {
-  --face: #d4d0c8;
+  --face: #c0c0c0;
   --shadow: #808080;
   --active: #000080;
   --win98-dark: #404040;
   --win98-raised: inset 1px 1px #fff, inset -1px -1px var(--win98-dark),
-    inset 2px 2px #e8e5df, inset -2px -2px var(--shadow);
+    inset 2px 2px var(--face), inset -2px -2px var(--shadow);
   --win98-sunken: inset 1px 1px var(--shadow), inset -1px -1px #fff,
-    inset 2px 2px var(--win98-dark), inset -2px -2px #e8e5df;
+    inset 2px 2px var(--win98-dark), inset -2px -2px var(--face);
 }
 
 [data-appearance="win98"] body {
@@ -113,7 +113,7 @@
 }
 [data-appearance="win98"] body:not(.inactive) .panes section:focus-within > h2 {
   color: var(--ink);
-  background: #e8e5df;
+  background: #d4d4d4;
   box-shadow: var(--win98-raised);
 }
 [data-appearance="win98"] .inset {

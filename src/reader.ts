@@ -32,6 +32,7 @@ const statusBar = get('status');
 const openButton = get<HTMLButtonElement>('open');
 const unreadOnly = get<HTMLInputElement>('unread');
 const refreshButton = get<HTMLButtonElement>('refresh');
+const manageButton = get<HTMLButtonElement>('manage-feeds');
 const markSubscriptionButton = get<HTMLButtonElement>('mark-subscription-read');
 const markAllButton = get<HTMLButtonElement>('mark-all-read');
 markSubscriptionButton.onclick = () => markAsRead(feedUrl);
@@ -459,7 +460,10 @@ function renderEntries(updatePreview = true): void {
   if (updatePreview) renderPreview();
 }
 
-for (const [scroller, label] of [[feedsList, 'subscriptions'], [articlesList, 'headlines'], [preview, 'article']] as const) {
+for (const [scroller, label] of [
+  [feedsList, 'subscriptions'], [articlesList, 'headlines'], [preview, 'article'],
+  [get('subscription-list'), 'subscription list']
+] as const) {
   const frame = document.createElement('div');
   frame.className = 'scroll-frame';
   scroller.before(frame);
@@ -790,6 +794,7 @@ get<HTMLFormElement>('article-size-form').onsubmit = event => {
   sizeDialog.close();
 };
 const closeWindowButton = get<HTMLButtonElement>('close-window');
+const dosCommands = get('dos-commands');
 const appearances = [
   { id: 'win31', label: 'Windows 3.1' },
   { id: 'win98', label: 'Windows 98' },
@@ -806,6 +811,7 @@ function applyAppearance(next: Appearance): void {
   if (next === 'dos') panes.after(toolbarPanel);
   else if (panes.previousElementSibling !== toolbarPanel) panes.before(toolbarPanel);
   closeWindowButton.hidden = next !== 'xp' && next !== 'win98';
+  dosCommands.hidden = next !== 'dos';
   appearance = next;
   for (const [pane, top, left] of positions) pane.scrollTo(left, top);
 }
@@ -820,20 +826,24 @@ applyAppearance(appearance);
 closeWindowButton.onclick = () => reader.windowCommand('close');
 const about = get<HTMLDialogElement>('about');
 let menuAnchor: HTMLElement | undefined;
+let menuReturnFocus: HTMLElement | undefined;
+let submenuHoverTimer: number | undefined;
 let maximized = false;
 type MenuItem = [label: string, shortcut: string, action: () => void, disabled?: boolean, checked?: boolean];
 
-function closeMenu(restoreFocus = false): void {
+function closeMenu(restoreFocus = false, keepMenuMode = false): void {
   const anchor = menuAnchor;
+  const returnFocus = menuReturnFocus ?? anchor;
+  if (!keepMenuMode) menuReturnFocus = undefined;
   closeSubmenu();
   menuAnchor = undefined;
   popup.hidden = true;
   if (anchor instanceof HTMLButtonElement) anchor.setAttribute('aria-expanded', 'false');
-  if (restoreFocus) anchor?.focus();
+  if (restoreFocus) returnFocus?.focus({ preventScroll: true });
 }
 
 function showMenu(anchor: HTMLButtonElement): void {
-  closeMenu();
+  closeMenu(false, true);
   const menu = anchor.dataset.menu;
   const items: (MenuItem | null)[] = menu === 'file' ? [
     ['Open Article', '', openSelected, !selected?.link],
@@ -908,7 +918,7 @@ function openPopup(anchor: HTMLElement, items: (MenuItem | null)[], x: number, y
       button.setAttribute('aria-expanded', 'false');
       button.setAttribute('aria-controls', submenu.id);
       button.dataset.submenu = label;
-      button.onclick = action;
+      button.onclick = () => action();
     } else {
       button.onclick = () => { closeMenu(true); action(); };
     }
@@ -923,25 +933,26 @@ function openPopup(anchor: HTMLElement, items: (MenuItem | null)[], x: number, y
 }
 
 function closeSubmenu(restoreFocus = false): void {
+  window.clearTimeout(submenuHoverTimer);
   submenu.hidden = true;
   const trigger = popup.querySelector<HTMLButtonElement>('[aria-controls="submenu"][aria-expanded="true"]');
   trigger?.setAttribute('aria-expanded', 'false');
   if (restoreFocus) trigger?.focus();
 }
 
-function showAppearance(): void {
+function showAppearance(focus = true): void {
   openChoiceMenu('Appearance', appearances.map(({ id, label }) =>
     [label, appearance === id, () => chooseAppearance(id)]
-  ));
+  ), focus);
 }
 
-function showTextSize(): void {
+function showTextSize(focus = true): void {
   openChoiceMenu('Text Size', articleSizes.map(({ pixels, label }) =>
     [label, pixels === articleSize, () => setArticleSize(pixels)]
-  ));
+  ), focus);
 }
 
-function openChoiceMenu(label: string, choices: [label: string, checked: boolean, choose: () => void][]): void {
+function openChoiceMenu(label: string, choices: [label: string, checked: boolean, choose: () => void][], focus: boolean): void {
   closeSubmenu();
   const trigger = Array.from(popup.querySelectorAll<HTMLButtonElement>('[data-submenu]'))
     .find(button => button.dataset.submenu === label);
@@ -964,15 +975,45 @@ function openChoiceMenu(label: string, choices: [label: string, checked: boolean
     ? bounds.right : bounds.left - submenu.offsetWidth;
   submenu.style.left = Math.max(0, left) + 'px';
   submenu.style.top = Math.max(0, Math.min(bounds.top, innerHeight - submenu.offsetHeight - 3)) + 'px';
-  submenu.querySelector<HTMLButtonElement>('[aria-checked="true"]')?.focus();
+  if (focus) submenu.querySelector<HTMLButtonElement>('[aria-checked="true"]')?.focus();
 }
+
+// Give the pointer time to cross neighboring rows on the way to either side of the flyout.
+popup.addEventListener('pointerover', event => {
+  if (event.pointerType !== 'mouse') return;
+  const row = (event.target as Element).closest<HTMLButtonElement>('button');
+  if (row?.contains(event.relatedTarget as Node | null)) return;
+  window.clearTimeout(submenuHoverTimer);
+  if (row?.getAttribute('aria-expanded') === 'true') return;
+  submenuHoverTimer = window.setTimeout(() => {
+    if (row?.dataset.submenu === 'Appearance') showAppearance(false);
+    else if (row?.dataset.submenu === 'Text Size') showTextSize(false);
+    else closeSubmenu(submenu.contains(document.activeElement));
+  }, 300);
+});
+popup.addEventListener('pointerleave', () => {
+  window.clearTimeout(submenuHoverTimer);
+  if (!submenu.hidden) {
+    submenuHoverTimer = window.setTimeout(() => closeSubmenu(submenu.contains(document.activeElement)), 300);
+  }
+});
+submenu.addEventListener('pointerenter', () => window.clearTimeout(submenuHoverTimer));
+submenu.addEventListener('pointerleave', () => {
+  if (!submenu.hidden) {
+    submenuHoverTimer = window.setTimeout(() => closeSubmenu(submenu.contains(document.activeElement)), 300);
+  }
+});
 
 for (const button of [systemButton, ...menuButtons]) {
   button.onclick = () => menuAnchor === button ? closeMenu(true) : showMenu(button);
   button.onkeydown = event => {
-    if (event.key === 'ArrowDown') {
+    if (['ArrowDown', 'ArrowUp'].includes(event.key)) {
       event.preventDefault();
+      event.stopPropagation();
       showMenu(button);
+      if (event.key === 'ArrowUp') {
+        Array.from(popup.querySelectorAll<HTMLButtonElement>('button:not(:disabled)')).at(-1)?.focus();
+      }
     }
     const index = menuButtons.indexOf(button);
     if (index >= 0 && ['ArrowLeft', 'ArrowRight'].includes(event.key)) {
@@ -984,6 +1025,7 @@ for (const button of [systemButton, ...menuButtons]) {
 
 document.addEventListener('pointerdown', event => {
   const target = event.target as Node;
+  if (menuReturnFocus && !menuAnchor && !targetIsMenuBar(target)) closeMenu();
   if (!submenu.hidden && popup.contains(target)
       && !(target as Element).closest('[aria-controls="submenu"]')) closeSubmenu();
   if (menuAnchor && !popup.contains(target) && !submenu.contains(target) && !menuAnchor.contains(target)) closeMenu();
@@ -991,9 +1033,48 @@ document.addEventListener('pointerdown', event => {
 document.addEventListener('focusin', event => {
   const target = event.target as Node;
   if (menuAnchor && !popup.contains(target) && !submenu.contains(target) && !menuAnchor.contains(target)) closeMenu();
+  else if (menuReturnFocus && !menuAnchor && !targetIsMenuBar(target)) closeMenu();
 });
+
+function targetIsMenuBar(target: Node): boolean {
+  return menuButtons.some(button => button.contains(target));
+}
+
+function enterMenuMode(): void {
+  const active = document.activeElement;
+  if (!menuReturnFocus && !menuAnchor && active instanceof HTMLElement) menuReturnFocus = active;
+}
+
+const dosActions: Record<string, () => void> = {
+  F2: () => manageButton.click(),
+  F3: () => openButton.click(),
+  F5: () => refreshButton.click(),
+  F9: () => {
+    enterMenuMode();
+    showMenu(menuButtons[0]);
+  },
+  F10: () => reader.windowCommand('close')
+};
+for (const button of dosCommands.querySelectorAll<HTMLButtonElement>('button[data-key]')) {
+  const key = button.dataset.key!;
+  button.onclick = dosActions[key];
+  button.setAttribute('aria-keyshortcuts', key);
+  const source = { F2: manageButton, F3: openButton, F5: refreshButton }[key];
+  if (!source) continue;
+  const syncDisabled = () => { button.disabled = source.disabled; };
+  syncDisabled();
+  new MutationObserver(syncDisabled).observe(source, { attributeFilter: ['disabled'] });
+}
+
 document.addEventListener('keydown', event => {
   if (document.querySelector('dialog[open]')) return;
+  window.clearTimeout(submenuHoverTimer);
+  if (appearance === 'dos' && !event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey
+      && Object.hasOwn(dosActions, event.key)) {
+    event.preventDefault();
+    if (!event.repeat || event.key === 'F5') dosActions[event.key]();
+    return;
+  }
   if (event.ctrlKey && !event.altKey && !event.metaKey && !event.shiftKey
       && event.code === 'KeyZ' && !(event.target as Element | null)?.closest('input, textarea, [contenteditable]')) {
     event.preventDefault();
@@ -1004,19 +1085,35 @@ document.addEventListener('keydown', event => {
     event.preventDefault();
     void refresh();
   }
-  if (event.altKey && event.code === 'Space') {
+  if (appearance !== 'dos' && event.key === 'F10'
+      && !event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey) {
     event.preventDefault();
-    showMenu(systemButton);
+    if (!event.repeat) toggleKeyboardMenu();
+    return;
   }
-  if (event.altKey) {
+  if (appearance !== 'dos' && event.altKey && event.code === 'Space') {
+    event.preventDefault();
+    enterMenuMode();
+    showMenu(systemButton);
+    return;
+  }
+  if (!event.ctrlKey && !event.metaKey && (event.altKey || (menuReturnFocus && !menuAnchor))) {
     const menu = { KeyF: 'file', KeyE: 'edit', KeyV: 'view', KeyD: 'feed', KeyH: 'help' }[event.code];
     const button = menuButtons.find(button => button.dataset.menu === menu);
     if (button) {
       event.preventDefault();
+      enterMenuMode();
       showMenu(button);
+      return;
     }
   }
-  if (!menuAnchor) return;
+  if (!menuAnchor) {
+    if (menuReturnFocus && event.key === 'Escape') {
+      event.preventDefault();
+      closeMenu(true);
+    }
+    return;
+  }
   if (!submenu.hidden && ['Escape', 'ArrowLeft'].includes(event.key)) {
     event.preventDefault();
     closeSubmenu(true);
@@ -1035,7 +1132,8 @@ document.addEventListener('keydown', event => {
   }
   if (['ArrowUp', 'ArrowDown'].includes(event.key)) {
     event.preventDefault();
-    const activeMenu = submenu.hidden ? popup : submenu;
+    const activeMenu = submenu.contains(active) ? submenu : popup;
+    if (activeMenu === popup) closeSubmenu();
     const buttons = Array.from(activeMenu.querySelectorAll<HTMLButtonElement>('button:not(:disabled)'));
     const index = buttons.findIndex(button => button === document.activeElement);
     const next = index < 0 ? (event.key === 'ArrowUp' ? buttons.length - 1 : 0)
@@ -1050,12 +1148,24 @@ document.addEventListener('keydown', event => {
 });
 
 let altPressed = false;
-document.addEventListener('keydown', event => { altPressed = event.key === 'Alt' && !event.repeat; });
+document.addEventListener('keydown', event => {
+  if (event.key !== 'Alt') altPressed = false;
+  else if (!event.repeat) altPressed = !event.ctrlKey && !event.metaKey && !event.shiftKey;
+});
+window.addEventListener('blur', () => { altPressed = false; });
+function toggleKeyboardMenu(): void {
+  if (menuAnchor || menuReturnFocus) closeMenu(true);
+  else {
+    enterMenuMode();
+    menuButtons[0].focus();
+  }
+}
 document.addEventListener('keyup', event => {
-  if (event.key === 'Alt' && altPressed && !document.querySelector('dialog[open]')) {
-    if (menuAnchor) closeMenu(true);
-    else menuButtons[0].focus();
-    altPressed = false;
+  if (event.key !== 'Alt') return;
+  const bareAlt = altPressed;
+  altPressed = false;
+  if (bareAlt && !document.querySelector('dialog[open]')) {
+    toggleKeyboardMenu();
   }
 });
 
@@ -1076,7 +1186,6 @@ unreadOnly.onchange = () => {
   renderEntries();
 };
 
-const manageButton = get<HTMLButtonElement>('manage-feeds');
 const subscriptionsDialog = get<HTMLDialogElement>('subscriptions-dialog');
 const subscriptionList = get<HTMLSelectElement>('subscription-list');
 const subscriptionError = get('subscription-error');
