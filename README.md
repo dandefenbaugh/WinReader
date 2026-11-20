@@ -44,3 +44,10 @@ its Dock icon via **Options → Keep in Dock**. The app includes its own runtime
 To rebuild the locally signed app, run `npm run package:mac` on macOS. The app
 lands in the `release` folder. The build targets the current Mac's architecture
 by default.
+
+## License
+
+WinReader’s original code is available under the [MIT License](LICENSE).
+The bundled fonts are licensed under CC BY-SA 3.0. See the
+[font credits](assets/font-credits.txt) for attribution and license details.
+Packaged builds include Electron’s license and Chromium’s third-party notices.
