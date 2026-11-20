@@ -5,7 +5,7 @@ retro themes you can switch between under **View → Appearance**.
 
 - **Windows 3.1** brings back gray beveled controls and classic window chrome.
 - **Windows 98** pairs a blue gradient title bar with recessed panes and a flat
-  icon toolbar. This theme is available when running the feature branch from source.
+  icon toolbar. Currently available when running from source.
 - **Windows XP (Luna Blue)** adds bright blue title bars and rounded controls.
 - **DOS Commander** takes inspiration from Norton Commander with deep-blue panes,
   cyan highlights, and a bottom command strip.
