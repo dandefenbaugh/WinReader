@@ -1,5 +1,8 @@
 WinReader version history
 
+Unreleased
+- Adds a Windows 98 appearance with a blue gradient title bar, beveled controls, and a flat icon toolbar.
+
 1.4.0
 - Adds DOS Commander, a Norton Commander-inspired appearance with blue panes, cyan menus, and a bottom command strip.
 

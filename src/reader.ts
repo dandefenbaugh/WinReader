@@ -792,6 +792,7 @@ get<HTMLFormElement>('article-size-form').onsubmit = event => {
 const closeWindowButton = get<HTMLButtonElement>('close-window');
 const appearances = [
   { id: 'win31', label: 'Windows 3.1' },
+  { id: 'win98', label: 'Windows 98' },
   { id: 'xp', label: 'Windows XP' },
   { id: 'dos', label: 'DOS Commander' }
 ] as const;
@@ -804,7 +805,7 @@ function applyAppearance(next: Appearance): void {
   document.documentElement.dataset.appearance = next;
   if (next === 'dos') panes.after(toolbarPanel);
   else if (panes.previousElementSibling !== toolbarPanel) panes.before(toolbarPanel);
-  closeWindowButton.hidden = next !== 'xp';
+  closeWindowButton.hidden = next !== 'xp' && next !== 'win98';
   appearance = next;
   for (const [pane, top, left] of positions) pane.scrollTo(left, top);
 }

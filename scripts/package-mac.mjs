@@ -12,7 +12,7 @@ const stage = await mkdtemp(join(tmpdir(), 'winreader-package-'));
 try {
   const assets = ['ms_sans_serif.woff2', 'ms_sans_serif_bold.woff2', 'font-credits.txt', 'refresh.png', 'feeds.png',
     'article.png', 'hourglass.png', 'up.png', 'down.png', 'xp-refresh.png', 'xp-feeds.png', 'xp-article.png'];
-  const files = ['main.cjs', 'preload.cjs', 'index.html', 'style.css', 'xp.css', 'dos.css', 'subscriptions.opml', 'dist/reader.js',
+  const files = ['main.cjs', 'preload.cjs', 'index.html', 'style.css', 'win98.css', 'xp.css', 'dos.css', 'subscriptions.opml', 'dist/reader.js',
     ...assets.map(file => join('assets', file))];
   for (const file of files) {
     const destination = join(stage, file);
