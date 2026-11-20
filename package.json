@@ -1,0 +1,20 @@
+{
+  "name": "winreader",
+  "version": "1.4.0",
+  "private": true,
+  "description": "A desktop RSS reader inspired by early Windows shareware",
+  "main": "main.cjs",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "npm run build && electron .",
+    "package:mac": "npm run build && node scripts/package-mac.mjs"
+  },
+  "devDependencies": {
+    "@electron/packager": "20.3.0",
+    "electron": "45.4.1",
+    "typescript": "5.9.3"
+  }
+}

@@ -1,0 +1,30 @@
+WinReader version history
+
+1.4.0
+- Adds DOS Commander, a Norton Commander-inspired appearance with blue panes, cyan menus, and a bottom command strip.
+
+1.3.0
+- Imports OPML subscription lists from the File menu, skips duplicates, and reports invalid entries.
+- Puts Open Article first in the File menu and moves Refresh and the bulk read commands to the Feed menu.
+
+1.2.0
+- Sorts subscriptions alphabetically in the sidebar and subscription manager.
+- Adds a Test Feed button and treats URLs that differ only by a fragment as duplicates.
+- Shows refresh failure reasons, the last successful check, and warnings when downloaded headlines cannot be saved.
+- Recovers usable subscriptions from damaged saved data and backs up the original data when a repaired list is saved.
+- Keeps articles readable if read history cannot be loaded or saved.
+- Resolves relative article links after feed redirects and honors Atom xml:base.
+- Shows the current app version automatically in Help > About WinReader.
+
+1.1.0
+- Adds the Windows XP (Luna Blue) theme and saves the selected appearance.
+- Adds adjustable article text size in both themes.
+- Loads cached headlines at startup and keeps them available when a refresh fails.
+- Uses conditional requests to avoid downloading unchanged feeds and shows when each feed was last checked.
+
+1.0.0
+- Initial standalone macOS release with a Windows 3.1-inspired interface.
+- Reads RSS, Atom, and JSON Feed with eight starter subscriptions.
+- Provides resizable subscription, headline, and article panes with formatted previews and images.
+- Adds, edits, and deletes subscriptions.
+- Tracks unread headlines and supports bulk marking as read with undo.

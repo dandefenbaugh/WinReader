@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' https: http:; object-src 'none'; base-uri 'none'">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WinReader</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="xp.css">
+  <link rel="stylesheet" href="dos.css">
+  <script src="dist/reader.js" defer></script>
+</head>
+<body>
+  <header class="titlebar">
+    <button class="window-button system-button" id="system-button" aria-label="Window menu" aria-haspopup="menu" aria-expanded="false"><span></span></button>
+    <div class="caption">WinReader</div>
+    <button class="window-button" id="minimize" aria-label="Minimize" title="Minimize"><span class="triangle down"></span></button>
+    <button class="window-button" id="maximize" aria-label="Maximize" title="Maximize"><span class="triangle up"></span></button>
+    <button class="window-button" id="close-window" aria-label="Close" title="Close" hidden><span></span></button>
+  </header>
+  <nav class="menubar" aria-label="Application menus">
+    <button data-menu="file" aria-haspopup="menu" aria-expanded="false"><u>F</u>ile</button>
+    <button data-menu="edit" aria-haspopup="menu" aria-expanded="false"><u>E</u>dit</button>
+    <button data-menu="view" aria-haspopup="menu" aria-expanded="false"><u>V</u>iew</button>
+    <button data-menu="feed" aria-haspopup="menu" aria-expanded="false">Fee<u>d</u></button>
+    <button data-menu="help" aria-haspopup="menu" aria-expanded="false"><u>H</u>elp</button>
+  </nav>
+  <div id="popup" class="popup" role="menu" hidden></div>
+  <div id="submenu" class="popup theme-popup" role="menu" hidden></div>
+  <main>
+    <div class="toolbar" id="toolbar">
+      <button class="raised" id="refresh" disabled><img class="pixel-icon" src="assets/refresh.png" alt=""><span class="button-label">Refresh</span></button>
+      <button class="raised" id="mark-subscription-read" disabled><span class="button-label">Mark Subscription as Read</span></button>
+      <button class="raised" id="mark-all-read" disabled><span class="button-label">Mark All Subscriptions as Read</span></button>
+      <button class="raised" id="manage-feeds" disabled><img class="pixel-icon" src="assets/feeds.png" alt=""><span class="button-label">Subscriptions…</span></button>
+      <button class="raised" id="open" disabled><img class="pixel-icon" src="assets/article.png" alt=""><span class="button-label">Open Article</span></button>
+      <label><input type="checkbox" id="unread"> Unread only</label>
+    </div>
+    <div class="panes">
+      <section class="subscriptions">
+        <h2 id="feeds-label">Subscriptions</h2>
+        <ul class="inset rows" id="feeds" role="listbox" aria-labelledby="feeds-label"></ul>
+      </section>
+      <div class="pane-divider" role="separator" aria-orientation="vertical"
+        aria-label="Resize Subscriptions and Headlines" tabindex="0" data-divider="subscriptions"></div>
+      <section class="headlines">
+        <h2 id="headlines-label">Headlines</h2>
+        <ul class="inset rows" id="articles" role="listbox" aria-labelledby="headlines-label"></ul>
+      </section>
+      <div class="pane-divider" role="separator" aria-orientation="vertical"
+        aria-label="Resize Headlines and Article" tabindex="0" data-divider="headlines"></div>
+      <section class="preview">
+        <h2 id="preview-label">Article</h2>
+        <article class="inset" id="preview" tabindex="0" aria-labelledby="preview-label">Select a headline to read it.</article>
+      </section>
+    </div>
+  </main>
+  <footer id="status-bar"><div class="status-box">
+    <img class="pixel-icon" id="refresh-hourglass" src="assets/hourglass.png" alt="" hidden>
+    <span id="status" role="status">Starting WinReader…</span>
+  </div><span id="count"></span></footer>
+  <dialog id="subscriptions-dialog" class="classic-dialog" aria-labelledby="subscriptions-title">
+    <h2 id="subscriptions-title">Subscriptions</h2>
+    <div class="dialog-body">
+      <label for="subscription-list">Feed subscriptions</label>
+      <div class="subscription-controls">
+        <select id="subscription-list" size="8"></select>
+        <div class="button-column">
+          <div class="subscription-commit">
+            <button type="button" class="raised default-button" id="save-subscriptions"><span class="button-label">OK</span></button>
+            <form method="dialog"><button class="raised"><span class="button-label">Cancel</span></button></form>
+          </div>
+          <button type="button" class="raised" id="add-feed"><span class="button-label">Add…</span></button>
+          <button type="button" class="raised" id="edit-feed"><span class="button-label">Edit…</span></button>
+          <button type="button" class="raised" id="delete-feed"><span class="button-label">Delete</span></button>
+        </div>
+      </div>
+      <p id="subscription-error" class="dialog-error" role="alert" hidden></p>
+    </div>
+  </dialog>
+  <dialog id="import-subscriptions-dialog" class="classic-dialog" aria-labelledby="import-title">
+    <h2 id="import-title">Import Subscriptions</h2>
+    <div class="dialog-body">
+      <div class="editor-fields import-fields">
+        <label for="import-file-name">File name:</label>
+        <input id="import-file-name" type="text" readonly>
+        <button type="button" class="raised" id="browse-opml" autofocus><span class="button-label">Browse…</span></button>
+        <input type="file" id="import-opml-file" accept=".opml,.xml" hidden>
+      </div>
+      <p id="import-summary" role="status">Choose an OPML export from your feed reader.</p>
+      <p id="import-error" class="dialog-error" role="alert" hidden></p>
+      <div class="dialog-actions">
+        <button type="button" id="confirm-import" class="raised default-button" disabled><span class="button-label">Import</span></button>
+        <form method="dialog"><button class="raised"><span class="button-label" id="close-import-label">Cancel</span></button></form>
+      </div>
+    </div>
+  </dialog>
+  <dialog id="feed-editor" class="classic-dialog" aria-labelledby="editor-title">
+    <h2 id="editor-title">Add Feed</h2>
+    <form id="feed-form" class="dialog-body">
+      <div class="editor-fields">
+        <label for="feed-name">Name</label>
+        <input id="feed-name" type="text">
+        <label for="feed-address">Feed URL</label>
+        <input id="feed-address" type="text" inputmode="url" spellcheck="false" aria-describedby="feed-error feed-test-status">
+      </div>
+      <p id="feed-error" class="dialog-error" role="alert" hidden></p>
+      <p id="feed-test-status" role="status" hidden></p>
+      <div class="dialog-actions">
+        <button type="button" class="raised" id="test-feed"><span class="button-label">Test Feed</span></button>
+        <button type="submit" class="raised default-button"><span class="button-label">OK</span></button>
+        <button type="button" class="raised" id="cancel-editor"><span class="button-label">Cancel</span></button>
+      </div>
+    </form>
+  </dialog>
+  <dialog id="delete-confirmation" class="classic-dialog" aria-labelledby="delete-title">
+    <h2 id="delete-title">Delete Feed</h2>
+    <form method="dialog" class="dialog-body">
+      <p id="delete-message"></p>
+      <div class="dialog-actions">
+        <button class="raised" value="delete"><span class="button-label">Delete</span></button>
+        <button class="raised default-button" value="cancel" autofocus><span class="button-label">Cancel</span></button>
+      </div>
+    </form>
+  </dialog>
+  <dialog id="article-size-dialog" class="classic-dialog" aria-labelledby="article-size-title">
+    <h2 id="article-size-title">Article Font Size</h2>
+    <form class="dialog-body" id="article-size-form">
+      <div class="editor-fields">
+        <label for="article-size">Size</label>
+        <select id="article-size" autofocus></select>
+      </div>
+      <fieldset class="size-sample">
+        <legend>Sample</legend>
+        <p id="article-size-sample">The quick brown fox jumps over the lazy dog.</p>
+      </fieldset>
+      <div class="dialog-actions">
+        <button type="submit" class="raised default-button"><span class="button-label">OK</span></button>
+        <button type="button" class="raised" id="cancel-article-size"><span class="button-label">Cancel</span></button>
+      </div>
+    </form>
+  </dialog>
+  <dialog id="about" aria-labelledby="about-title">
+    <form method="dialog">
+      <header class="about-caption">
+        <button class="window-button system-button" type="submit" aria-label="Close About WinReader"><span></span></button>
+        <h2 id="about-title">About WinReader</h2>
+      </header>
+      <div class="about-body">
+        <img class="pixel-icon about-icon" src="assets/article.png" alt="">
+        <div class="about-details">
+          <p><strong>WinReader</strong><br><span id="about-version"></span></p>
+        </div>
+        <button class="raised default-button about-ok" type="submit" autofocus><span class="button-label">OK</span></button>
+        <p class="about-formats">Desktop feed reader<br>RSS, Atom, and JSON Feed</p>
+      </div>
+    </form>
+  </dialog>
+</body>
+</html>

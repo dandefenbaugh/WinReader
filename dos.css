@@ -1,0 +1,130 @@
+:root[data-appearance="dos"] {
+  color-scheme: dark;
+  --dos-bg: #101220;
+  --dos-panel: #151f64;
+  --dos-preview: #192653;
+  --dos-cyan: #78e6e3;
+  --dos-ink: #102c37;
+  --dos-frame: #648abd;
+  --dos-muted: #bac6e5;
+  --dos-mono: Menlo, Consolas, "Liberation Mono", monospace;
+  color: #f1f5ff;
+  font: 13px var(--dos-mono);
+}
+
+[data-appearance="dos"] body {
+  background: var(--dos-bg);
+  border-color: var(--dos-frame);
+  box-shadow: none;
+}
+
+[data-appearance="dos"] .titlebar {
+  background: var(--dos-panel);
+  color: var(--dos-cyan);
+  border-color: var(--dos-frame);
+}
+[data-appearance="dos"] body.inactive .titlebar { color: var(--dos-muted); }
+
+[data-appearance="dos"] :is(.menubar, .popup, .raised, .window-button, .scroll-arrow) {
+  color: var(--dos-ink);
+  background-color: var(--dos-cyan);
+  border-color: var(--dos-ink);
+  box-shadow: none;
+}
+[data-appearance="dos"] .popup { box-shadow: 3px 3px var(--dos-bg); }
+[data-appearance="dos"] .popup button { background-color: transparent; }
+[data-appearance="dos"] :is(.menubar, .popup) button:is(:hover, :focus, [aria-expanded="true"]):enabled,
+[data-appearance="dos"] :is(.raised, .window-button, .scroll-arrow):is(:hover, :active):enabled {
+  color: #fff;
+  background-color: #315478;
+}
+[data-appearance="dos"] .popup button:disabled,
+[data-appearance="dos"] .raised:disabled {
+  color: #3d585d;
+  text-shadow: none;
+}
+
+[data-appearance="dos"] .toolbar { gap: 4px; }
+[data-appearance="dos"] .toolbar button,
+[data-appearance="dos"] .toolbar button:active:not(:disabled) {
+  min-width: 0;
+  min-height: 24px;
+  padding: 3px 6px;
+}
+[data-appearance="dos"] .toolbar .pixel-icon { display: none; }
+[data-appearance="dos"] input[type="checkbox"] {
+  color: var(--dos-ink);
+  background: var(--dos-cyan);
+}
+[data-appearance="dos"] input[type="checkbox"]:focus-visible {
+  outline: 1px solid var(--dos-cyan);
+  outline-offset: 2px;
+}
+
+[data-appearance="dos"] .panes section {
+  background: var(--dos-panel);
+  border: 3px double var(--dos-frame);
+}
+[data-appearance="dos"] .panes h2 {
+  color: var(--dos-cyan);
+  border: 0;
+  border-bottom: 1px solid var(--dos-frame);
+  box-shadow: none;
+}
+[data-appearance="dos"] body:not(.inactive) .panes section:focus-within > h2,
+[data-appearance="dos"] .rows li[aria-selected="true"] {
+  color: var(--dos-ink);
+  background: var(--dos-cyan);
+  box-shadow: none;
+}
+[data-appearance="dos"] .panes .inset {
+  color: inherit;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+[data-appearance="dos"] .panes .preview { background: var(--dos-preview); }
+[data-appearance="dos"] #articles { font: inherit; }
+[data-appearance="dos"] .rows li.empty,
+[data-appearance="dos"] #preview :is(.metadata, figcaption) { color: var(--dos-muted); }
+[data-appearance="dos"] .feed-stale { color: #ffdd83; }
+[data-appearance="dos"] .rows li[aria-selected="true"] .feed-stale { color: #523000; }
+[data-appearance="dos"] #preview a[href] { color: var(--dos-cyan); }
+[data-appearance="dos"] #preview a:focus-visible { outline-color: currentColor; }
+[data-appearance="dos"] #preview :is(code, kbd, pre) { background: var(--dos-bg); }
+
+[data-appearance="dos"] .pane-divider { background: none; }
+[data-appearance="dos"] .pane-divider:focus-visible,
+[data-appearance="dos"] .panes.dragging::after {
+  outline-color: var(--dos-cyan);
+  border-color: var(--dos-cyan);
+  box-shadow: none;
+}
+[data-appearance="dos"] footer > * { border-color: var(--dos-frame); }
+[data-appearance="dos"] ::-webkit-scrollbar-track { background: var(--dos-bg); }
+[data-appearance="dos"] ::-webkit-scrollbar-thumb {
+  background: var(--dos-frame);
+  border-color: var(--dos-bg);
+  box-shadow: none;
+}
+[data-appearance="dos"] .scroll-arrow { right: 0; }
+[data-appearance="dos"] .scroll-up { top: 0; }
+[data-appearance="dos"] .scroll-down { bottom: 0; }
+
+[data-appearance="dos"] :is(dialog, #about) {
+  color: var(--dos-ink);
+  background: #d8dfeb;
+  border: 3px double var(--dos-ink);
+  box-shadow: 3px 3px var(--dos-bg);
+}
+[data-appearance="dos"] dialog h2 {
+  color: var(--dos-cyan);
+  background: var(--dos-panel);
+}
+[data-appearance="dos"] :is(#subscription-list, .editor-fields input, #article-size) {
+  color-scheme: light;
+  color: var(--dos-ink);
+  background: #f4f6fc;
+  box-shadow: none;
+}
+[data-appearance="dos"] #subscription-list option:checked { background: var(--dos-panel); }
