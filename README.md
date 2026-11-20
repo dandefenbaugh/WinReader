@@ -8,6 +8,10 @@ three themes you can switch between under **View → Appearance**.
 - **DOS Commander** takes inspiration from Norton Commander with deep-blue panes,
   cyan highlights, and a bottom command strip.
 
+| Windows 3.1 | Windows XP (Luna Blue) | DOS Commander |
+| --- | --- | --- |
+| [![WinReader with gray Windows 3.1 controls](docs/screenshots/win31.png)](docs/screenshots/win31.png) | [![WinReader with blue Luna window chrome](docs/screenshots/xp.png)](docs/screenshots/xp.png) | [![WinReader with cyan menus and deep-blue DOS Commander panes](docs/screenshots/dos.png)](docs/screenshots/dos.png) |
+
 The reader includes formatted article previews, adjustable text size, unread
 tracking, and cached headlines. It ships with a starter set of feeds and can
 import subscriptions from an OPML file.
