@@ -42,6 +42,7 @@ try {
   });
   for (const bundle of bundles) {
     const app = join(bundle, 'WinReader.app');
+    await copyFile(join(root, 'LICENSE'), join(app, 'Contents', 'Resources', 'WinReader-LICENSE.txt'));
     execFileSync('/usr/bin/codesign', ['--force', '--deep', '--sign', '-', app], { stdio: 'inherit' });
     execFileSync('/usr/bin/codesign', ['--verify', '--deep', '--strict', app], { stdio: 'inherit' });
     console.log(app);
